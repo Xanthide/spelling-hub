@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 6 Spelling Hub</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #22c55e;
+            --error: #ef4444;
+            --task-color: #fcd34d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--accent);
+            margin-top: 0;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            text-align: left;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        select, input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #334155;
+            background-color: #0f172a;
+            color: var(--text-main);
+            font-size: 1.1rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input[type="text"]:focus, textarea:focus {
+            border-color: var(--accent);
+        }
+
+        textarea {
+            font-family: monospace;
+            font-size: 0.95rem;
+            resize: none;
+            height: 170px;
+            margin-top: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--accent);
+            color: #0f172a;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .secondary-btn {
+            background-color: #334155;
+            color: var(--text-main);
+            margin-top: 10px;
+        }
+        .secondary-btn:hover {
+            background-color: #475569;
+        }
+
+        .exit-btn {
+            background-color: transparent;
+            color: var(--error);
+            border: 2px solid var(--error);
+            margin-top: 40px;
+            padding: 10px;
+        }
+        .exit-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Standard Game Elements */
+        .display-box {
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin: 25px 0;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .prompt-text {
+            font-size: 1.2rem;
+            color: var(--task-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-height: 28px;
+        }
+
+        .feedback.correct { color: var(--success); }
+        .feedback.incorrect { color: var(--error); }
+
+        .progress {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .mark-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--task-color);
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(252, 211, 77, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Alphabet Sort Elements */
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .sorted-area {
+            min-height: 100px;
+            padding: 15px;
+            border: 2px dashed #334155;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .sorted-header {
+            text-align: left;
+            color: var(--success);
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 5px;
+        }
+
+        .alpha-btn {
+            background-color: var(--card-bg);
+            border: 2px solid #334155;
+            color: var(--text-main);
+            padding: 10px 16px;
+            margin: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            width: auto;
+        }
+
+        .alpha-btn:hover {
+            border-color: var(--accent);
+            background-color: #334155;
+        }
+
+        .alpha-btn.correct {
+            background-color: var(--success);
+            border-color: var(--success);
+            color: #fff;
+            cursor: default;
+        }
+
+        .incorrect-shake {
+            animation: shake 0.4s;
+            border-color: var(--error) !important;
+            color: var(--error) !important;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- SETUP SCREEN -->
+    <div id="setup-screen" class="screen active">
+        <h1>⚔️ Spelling Learning Hub</h1>
+        <p style="color: var(--text-muted)">Select your options and begin your mission!</p>
+        
+        <label for="activity-select">Choose Activity Mission:</label>
+        <select id="activity-select">
+            <option value="scrambler">⚔️ Spelling Arena (Anagram Scrambler)</option>
+            <option value="detective">🕵️‍♂️ Spelling Detective (Dynamic Tasks)</option>
+            <option value="alphabetical">🔤 Alphabet Attack (A-Z Sorting)</option>
+        </select>
+
+        <label for="group-select">Your Team/Group:</label>
+        <select id="group-select">
+            <option value="Orange">Orange Group</option>
+            <option value="Pink">Pink Group</option>
+            <option value="Blue">Blue Group</option>
+        </select>
+
+        <label for="week-select">Target Week:</label>
+        <select id="week-select">
+            <option value="Week 1">Week 1</option>
+            <option value="Week 2">Week 2</option>
+            <option value="Week 3">Week 3</option>
+            <option value="Week 4">Week 4</option>
+            <option value="Week 5">Week 5</option>
+            <option value="Week 6">Week 6</option>
+            <option value="Week 7">Week 7</option>
+            <option value="Week 8">Week 8</option>
+            <option value="Week 9">Week 9</option>
+            <option value="Week 10">Week 10</option>
+        </select>
+
+        <button onclick="startGame()">Launch Activity</button>
+    </div>
+
+    <!-- GAMEPLAY SCREEN -->
+    <div id="game-screen" class="screen">
+        <div class="progress">Progress: <span id="current-index">0</span> of <span id="total-words">14</span></div>
+        <h2 id="game-heading">Mission Objective:</h2>
+        <div id="game-prompt" class="prompt-text"></div>
+        
+        <!-- STANDARD TYPING UI (For Scrambler & Detective) -->
+        <div id="standard-ui">
+            <div class="display-box" id="main-display">-----</div>
+            <input type="text" id="user-input" autocomplete="off" placeholder="Type answer here...">
+            <div id="feedback" class="feedback"></div>
+            <button id="action-btn" onclick="checkAnswer()">Submit Answer</button>
+        </div>
+
+        <!-- ALPHABET SORTING UI (For Alphabet Attack) -->
+        <div id="alphabet-ui" style="display: none;">
+            <div id="alphabet-bank" class="word-bank"></div>
+            <div class="sorted-header">Sorted Words (A - Z):</div>
+            <div id="alphabet-sorted" class="word-bank sorted-area"></div>
+        </div>
+
+        <button class="exit-btn" onclick="endGame()">🚪 Finish Early & Generate Mark</button>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div id="results-screen" class="screen">
+        <h1>🏆 Mission Report</h1>
+        <div id="score-report" class="mark-display"></div>
+        <p id="completion-text" style="color: var(--text-muted);"></p>
+        
+        <label style="text-align: center; margin-top: 15px;">Your Progress Voucher:</label>
+        <textarea id="report-text" readonly></textarea>
+        
+        <button id="copy-btn" onclick="copyReport()">📋 Copy Report to Clipboard</button>
+        <button class="secondary-btn" onclick="returnToSetup()">Return to Hub Menu</button>
+    </div>
+</div>
+
+<script>
+    // COMPLETE TERM 3 DATA BANK
+    const spellingDatabase = {
+        "Orange": {
+            "Week 1": ["special", "artificial", "beneficial", "social", "facial", "official", "specialist", "crucial", "commercial", "especially", "officially", "antisocial", "financial", "superficial"],
+            "Week 2": ["reaction", "celebration", "examination", "initial", "potential", "confidential", "martial", "essential", "nuptial", "residential", "credential", "partial", "celestial", "influential"],
+            "Week 3": ["demeanour", "splendour", "endeavour", "clamour", "humour", "candour", "centre", "massacre", "litre", "lyre", "calibre", "fibre", "millimetre", "meagre"],
+            "Week 4": ["anguish", "sanguine", "bilingual", "iguana", "penguin", "distinguish", "language", "ensuite", "extinguish", "languish", "suave", "guacamole", "linguistics", "suite"],
+            "Week 5": ["infatuation", "punctuate", "sumptuous", "capitulate", "saturate", "perpetuate", "situate", "unfortunate", "postulate", "punctual", "estuary", "bitumen", "statute", "tarantula"],
+            "Week 6": ["intelligent", "gentleman", "generation", "exaggerate", "tragically", "vigilant", "dangerous", "urgently", "legion", "religion", "region", "hygiene", "nostalgia", "contagious"],
+            "Week 7": ["allegiance", "prestigious", "sacrilegious", "plagiarise", "paraplegia", "hemiplegia", "neuralgia", "quadriplegia", "contagious", "educate", "graduate", "grandeur", "residual", "residue"],
+            "Week 8": ["euphoria", "neutral", "feuding", "therapeutic", "eulogy", "neurotic", "eucalypt", "feudal", "neutron", "neural", "Europe", "eureka", "deuce", "euphemism"],
+            "Week 9": ["calculate", "evaluate", "peculiar", "fabulous", "popular", "virtuous", "simulate", "argument", "curate", "university", "union", "studio", "educate", "nuclear"],
+            "Week 10": ["artificial", "confidential", "influential", "endeavour", "distinguish", "perpetuate", "exaggerate", "prestigious", "euphemism", "university"]
+        },
+        "Pink": {
+            "Week 1": ["tolerant", "fragrant", "unobservant", "insignificant", "elegant", "compliant", "defiant", "reliant", "incessant", "triumphant", "ignorant", "vigilant", "brilliant", "reluctant"],
+            "Week 2": ["affluent", "acquiescent", "adjacent", "persistent", "delinquent", "luminescent", "eloquent", "indulgent", "translucent", "turbulent", "diligent", "insurgent", "permanent", "magnificent"],
+            "Week 3": ["disenchantment", "reimbursement", "disappointment", "commencement", "embarrassment", "amazement", "experiment", "establishment", "refinement", "improvement", "fulfilment", "allotment", "development", "enrichment"],
+            "Week 4": ["sportsmanship", "hardship", "penmanship", "dealership", "friendship", "relationship", "championship", "fellowship", "partnership", "scholarship", "guardianship", "apprenticeship", "dictatorship", "companion"],
+            "Week 5": ["physician", "musician", "comedian", "librarian", "vegetarian", "pedestrian", "guardian", "technician", "dietician", "civilian", "beautician", "parliamentarian", "clinician", "magician"],
+            "Week 6": ["precautionary", "beneficiary", "ordinary", "unnecessary", "supplementary", "revolutionary", "contemporary", "sanctuary", "preliminary", "complimentary", "glossary", "literary", "temporary", "secondary"],
+            "Week 7": ["compensatory", "perfunctory", "contradictory", "inflammatory", "discriminatory", "unsatisfactory", "migratory", "accessory", "trajectory", "compulsory", "inventory", "exploratory", "introductory", "conservatory"],
+            "Week 8": ["stellar", "unfamiliar", "dissimilar", "linear", "irregular", "granular", "modular", "particular", "spectacular", "perpendicular", "circular", "guitar", "muscular", "peninsular"],
+            "Week 9": ["nanotechnology", "biotechnology", "mythology", "meteorology", "terminology", "kinesiology", "morphology", "immunology", "geology", "psychology", "vulcanology", "audiology", "pharmacology", "sociology"],
+            "Week 10": ["insignificant", "magnificent", "embarrassment", "relationship", "parliamentarian", "unnecessary", "unsatisfactory", "perpendicular", "nanotechnology", "psychology"]
+        },
+        "Blue": {
+            "Week 1": ["hemisphere", "hemiplegic", "semitransparent", "semi-formal", "semiconscious", "semipermanent", "hyperextend", "hyperactive", "hypersensitive", "hypercritical", "hypochondriac", "hypothetical", "hypocrite", "hypothermia"],
+            "Week 2": ["emancipated", "embark", "embodiment", "embezzle", "embellish", "entice", "enhance", "enrichment", "encouragement", "enclosure", "encompass", "entangle", "envision", "encapsulate"],
+            "Week 3": ["follicle", "vehicle", "article", "icicle", "chronicle", "particle", "cubicle", "miracle", "receptacle", "oracle", "debacle", "spectacle", "pinnacle", "obstacle"],
+            "Week 4": ["ideological", "methodical", "sceptical", "nonsensical", "ethical", "comical", "reciprocal", "chronological", "tactical", "satirical", "logical", "asymmetrical", "technical", "mechanical"],
+            "Week 5": ["collaborative", "instinctive", "inclusive", "manipulative", "destructive", "innovative", "lucrative", "impulsive", "excessive", "elusive", "persuasive", "compulsive", "perceptive", "disruptive"],
+            "Week 6": ["exuberance", "brilliance", "extravagance", "vigilance", "reconnaissance", "endurance", "nonchalance", "nuisance", "vengeance", "misguidance", "alliance", "dominance", "reluctance", "tolerance"],
+            "Week 7": ["indulgence", "effervescence", "impudence", "correspondence", "independence", "condolence", "convalescence", "imminence", "dependence", "convergence", "pretence", "reference", "excellence", "imprudence"],
+            "Week 8": ["dynamic", "sarcastic", "lethargic", "claustrophobic", "opportunistic", "catastrophic", "idealistic", "apologetic", "dramatic", "enthusiastic", "eccentric", "fantastic", "unrealistic", "symbolic"],
+            "Week 9": ["emphasise", "apologise", "scrutinise", "revitalise", "jeopardise", "memorise", "recognise", "penalise", "criticise", "capitalise", "surmise", "maximise", "comprise", "enterprise"],
+            "Week 10": ["semitransparent", "hypochondriac", "encapsulate", "receptacle", "asymmetrical", "reconnaissance", "effervescence", "claustrophobic", "scrutinise", "jeopardise"]
+        }
+    };
+
+    const detectiveRules = {
+        "Orange": {
+            "Week 1": { prompt: "Type the exact graph or digraph making the /sh/ sound:", answers: ["ci", "cial"] },
+            "Week 2": { prompt: "Type the suffix or rule part making the /sh/ or /shul/ sound:", answers: ["tion", "tial"] },
+            "Week 3": { prompt: "Type the ending graph/trigraph spelling the schwa sound:", answers: ["our", "re"] },
+            "Week 4": { prompt: "Type the vowel character tracking the /w/ phoneme:", answers: ["u"] },
+            "Week 5": { prompt: "Type the dynamic letter character generating the /ch/ sound:", answers: ["t"] },
+            "Week 6": { prompt: "Type the target letters mapping to the /j/ sound context:", answers: ["g", "gi"] },
+            "Week 7": { prompt: "Type the target graph elements driving the /j/ sound pattern:", answers: ["gi", "d"] },
+            "Week 8": { prompt: "Type the starting digraph element yielding the /y + oo/ sound:", answers: ["eu"] },
+            "Week 9": { prompt: "Type the specific vowel tracking the /y + oo/ sound engine:", answers: ["u"] },
+            "Week 10": { prompt: "Type ANY target digraph or phonic suffix rule found in this revision word:", answers: ["ci", "cial", "tion", "tial", "our", "re", "t", "g", "gi", "d", "eu", "u"] }
+        },
+        "Pink": {
+            "Week 1": { prompt: "Type the exact spelling suffix indicating 'having a quality of':", answers: ["ant", "ent"] },
+            "Week 2": { prompt: "Type the exact spelling suffix indicating 'a person who / quality of':", answers: ["ent", "ant"] },
+            "Week 3": { prompt: "Type the structural suffix indicating a 'state of, action or result':", answers: ["ment"] },
+            "Week 4": { prompt: "Type the common suffix tracking 'meaning state, condition of, or skill':", answers: ["ship"] },
+            "Week 5": { prompt: "Type the target noun suffix matching the descriptor 'meaning one who':", answers: ["ian"] },
+            "Week 6": { prompt: "Type the target suffix matching 'meaning relating to':", answers: ["ary", "ery", "ory"] },
+            "Week 7": { prompt: "Type the specific structural suffix 'meaning relating to':", answers: ["ory", "ary", "ery"] },
+            "Week 8": { prompt: "Type the specific suffix mapping to 'a person who, or relating to':", answers: ["ar"] },
+            "Week 9": { prompt: "Type the academic word suffix 'meaning study of':", answers: ["ology"] },
+            "Week 10": { prompt: "Type ANY suffix extension rule tracked throughout this term's study:", answers: ["ant", "ent", "ment", "ship", "ian", "ary", "ery", "ory", "ar", "ology"] }
+        },
+        "Blue": {
+            "Week 1": { prompt: "Type the word-start prefix element meaning 'half', 'under' or 'above':", answers: ["semi", "hemi", "hyper", "hypo"] },
+            "Week 2": { prompt: "Type the core prefix element 'meaning cause to, put into or make':", answers: ["en", "em"] },
+            "Week 3": { prompt: "Type the ending word suffix 'indicating place or means by which action is formed':", answers: ["icle", "acle"] },
+            "Week 4": { prompt: "Type the target descriptor suffix 'meaning relating to, characterised by':", answers: ["cal"] },
+            "Week 5": { prompt: "Type the descriptive word suffix 'meaning having the nature of':", answers: ["ive"] },
+            "Week 6": { prompt: "Type the core spelling suffix 'meaning state or quality of':", answers: ["ance"] },
+            "Week 7": { prompt: "Type the spelling suffix 'meaning state, condition or action':", answers: ["ence", "ense"] },
+            "Week 8": { prompt: "Type the phonics suffix 'meaning relating to or characterised by':", answers: ["ic"] },
+            "Week 9": { prompt: "Type the suffix extension 'meaning cause, treat, or become':", answers: ["ise", "ize", "yse"] },
+            "Week 10": { prompt: "Type ANY prefix or suffix construction rule tested during this term:", answers: ["semi", "hemi", "hyper", "hypo", "en", "em", "icle", "acle", "cal", "ive", "ance", "ence", "ense", "ic", "ise", "ize", "yse"] }
+        }
+    };
+
+    let currentWords = [];
+    let currentIndex = 0;
+    let currentTargetWord = "";
+    let mistakesCount = 0;
+    let selectedActivity = "scrambler";
+    let selectedGroup = "";
+    let selectedWeek = "";
+    let currentTaskType = "";
+    
+    let wordsMastered = [];
+    let wordsStruggled = [];
+    
+    // Alphabet Mode Variables
+    let sortedTargetWords = [];
+    let currentAlphaMistakes = new Set();
+
+    window.onload = function() {
+        const savedGroup = localStorage.getItem("selectedGroup");
+        if (savedGroup) document.getElementById("group-select").value = savedGroup;
+    };
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function scramble(word) {
+        let scrambled = word.split('').sort(() => Math.random() - 0.5).join('');
+        if (scrambled === word && word.length > 1) {
+            scrambled = word.split('').reverse().join('');
+        }
+        return scrambled;
+    }
+
+    function startGame() {
+        selectedActivity = document.getElementById("activity-select").value;
+        selectedGroup = document.getElementById("group-select").value;
+        selectedWeek = document.getElementById("week-select").value;
+
+        localStorage.setItem("selectedGroup", selectedGroup);
+
+        currentWords = [...spellingDatabase[selectedGroup][selectedWeek]];
+        shuffleArray(currentWords);
+        
+        currentIndex = 0;
+        mistakesCount = 0;
+        wordsMastered = [];
+        wordsStruggled = [];
+
+        document.getElementById("setup-screen").classList.remove("active");
+        document.getElementById("game-screen").classList.add("active");
+        
+        document.getElementById("total-words").innerText = currentWords.length;
+
+        if (selectedActivity === "alphabetical") {
+            document.getElementById("standard-ui").style.display = "none";
+            document.getElementById("alphabet-ui").style.display = "block";
+            setupAlphabetMode();
+        } else {
+            document.getElementById("standard-ui").style.display = "block";
+            document.getElementById("alphabet-ui").style.display = "none";
+            
+            if (selectedActivity === "scrambler") {
+                document.getElementById("game-heading").innerText = "Unscramble the Word:";
+            } else {
+                document.getElementById("game-heading").innerText = "🕵️‍♂️ Detective Task:";
+            }
+            nextWord();
+        }
+    }
+
+    // --- ALPHABET MODE LOGIC ---
+    function setupAlphabetMode() {
+        sortedTargetWords = [...currentWords].sort((a, b) => a.localeCompare(b));
+        currentAlphaMistakes.clear();
+        
+        document.getElementById("game-heading").innerText = "🔤 Alphabet Attack:";
+        document.getElementById("game-prompt").innerText = "Tap the words below to lock them in alphabetical order from A to Z.";
+        document.getElementById("current-index").innerText = "0";
+
+        const bank = document.getElementById("alphabet-bank");
+        const sorted = document.getElementById("alphabet-sorted");
+        bank.innerHTML = "";
+        sorted.innerHTML = "";
+        
+        // Render buttons in random shuffled order
+        currentWords.forEach(word => {
+            const btn = document.createElement("button");
+            btn.className = "alpha-btn";
+            btn.innerText = word;
+            btn.onclick = () => checkAlphabetWord(word, btn);
+            bank.appendChild(btn);
+        });
+    }
+
+    function checkAlphabetWord(word, btnElement) {
+        const expectedWord = sortedTargetWords[currentIndex];
+        
+        if (word === expectedWord) {
+            // Correct Selection
+            btnElement.classList.add("correct");
+            btnElement.onclick = null; 
+            document.getElementById("alphabet-sorted").appendChild(btnElement);
+            
+            if (currentAlphaMistakes.has(word)) {
+                wordsStruggled.push(word);
+            } else {
+                wordsMastered.push(word);
+            }
+            
+            currentIndex++;
+            document.getElementById("current-index").innerText = currentIndex;
+            
+            if (currentIndex >= sortedTargetWords.length) {
+                setTimeout(endGame, 800);
+            }
+        } else {
+            // Incorrect Selection
+            btnElement.classList.add("incorrect-shake");
+            mistakesCount++;
+            currentAlphaMistakes.add(expectedWord); 
+            
+            setTimeout(() => {
+                btnElement.classList.remove("incorrect-shake");
+            }, 400);
+        }
+    }
+
+    // --- STANDARD MODE LOGIC ---
+    function nextWord() {
+        if (currentIndex >= currentWords.length) {
+            endGame();
+            return;
+        }
+
+        document.getElementById("feedback").innerText = "";
+        document.getElementById("feedback").className = "feedback";
+        document.getElementById("user-input").value = "";
+        document.getElementById("user-input").disabled = false;
+        document.getElementById("action-btn").innerText = "Submit Answer";
+        document.getElementById("action-btn").setAttribute("onclick", "checkAnswer()");
+
+        document.getElementById("current-index").innerText = currentIndex + 1;
+        currentTargetWord = currentWords[currentIndex];
+
+        if (selectedActivity === "scrambler") {
+            document.getElementById("game-prompt").innerText = "Rearrange all the scrambled letters to spell your target word correctly.";
+            document.getElementById("main-display").innerText = scramble(currentTargetWord);
+            document.getElementById("user-input").placeholder = "Type correct spelling here...";
+        } else {
+            const detectiveTasks = ["rule", "position", "vowels", "missing"];
+            currentTaskType = detectiveTasks[Math.floor(Math.random() * detectiveTasks.length)];
+            
+            const currentRule = detectiveRules[selectedGroup][selectedWeek];
+            const matchedRule = currentRule.answers.find(a => currentTargetWord.toLowerCase().includes(a)) || currentRule.answers[0];
+
+            if (currentTaskType === "rule") {
+                document.getElementById("game-prompt").innerText = currentRule.prompt;
+                document.getElementById("main-display").innerText = currentTargetWord;
+                document.getElementById("user-input").placeholder = "Type the rule part...";
+            } 
+            else if (currentTaskType === "position") {
+                document.getElementById("game-prompt").innerText = `Where does the target rule ('${matchedRule}') appear in this word? Type 'start', 'middle', or 'end'.`;
+                document.getElementById("main-display").innerText = currentTargetWord;
+                document.getElementById("user-input").placeholder = "start / middle / end";
+            } 
+            else if (currentTaskType === "vowels") {
+                document.getElementById("game-prompt").innerText = `Extract the vowels! Type only the vowels (a, e, i, o, u) in this word, in exact order.`;
+                document.getElementById("main-display").innerText = currentTargetWord;
+                document.getElementById("user-input").placeholder = "e.g. house -> oue";
+            } 
+            else if (currentTaskType === "missing") {
+                document.getElementById("game-prompt").innerText = `The target rule has been stolen! Type the FULL word correctly to fix it.`;
+                let blanked = currentTargetWord.toLowerCase().replace(matchedRule, "_".repeat(matchedRule.length));
+                document.getElementById("main-display").innerText = blanked;
+                document.getElementById("user-input").placeholder = "Type the whole word...";
+            }
+        }
+
+        document.getElementById("user-input").focus();
+    }
+
+    let currentWordHasMistake = false;
+
+    function checkAnswer() {
+        const userGuess = document.getElementById("user-input").value.trim().toLowerCase();
+        const feedbackDiv = document.getElementById("feedback");
+        let isCorrect = false;
+
+        if (selectedActivity === "scrambler") {
+            isCorrect = (userGuess === currentTargetWord.toLowerCase());
+        } else {
+            const currentRule = detectiveRules[selectedGroup][selectedWeek];
+            const matchedRule = currentRule.answers.find(a => currentTargetWord.toLowerCase().includes(a)) || currentRule.answers[0];
+
+            if (currentTaskType === "rule") {
+                isCorrect = currentRule.answers.includes(userGuess) && currentTargetWord.toLowerCase().includes(userGuess);
+            } 
+            else if (currentTaskType === "position") {
+                let idx = currentTargetWord.toLowerCase().indexOf(matchedRule);
+                let correctPos = (idx === 0) ? "start" : (idx + matchedRule.length === currentTargetWord.length ? "end" : "middle");
+                isCorrect = (userGuess === correctPos);
+            } 
+            else if (currentTaskType === "vowels") {
+                let correctVowels = currentTargetWord.toLowerCase().replace(/[^aeiou]/g, '');
+                isCorrect = (userGuess === correctVowels);
+            } 
+            else if (currentTaskType === "missing") {
+                isCorrect = (userGuess === currentTargetWord.toLowerCase());
+            }
+        }
+
+        if (isCorrect) {
+            feedbackDiv.innerText = "⭐ Brilliant! That is correct.";
+            feedbackDiv.className = "feedback correct";
+            
+            if (currentWordHasMistake) {
+                wordsStruggled.push(currentTargetWord);
+            } else {
+                wordsMastered.push(currentTargetWord);
+            }
+            
+            document.getElementById("user-input").disabled = true;
+            document.getElementById("action-btn").innerText = "Next Word ➡️";
+            document.getElementById("action-btn").setAttribute("onclick", "advanceProgress()");
+        } else {
+            feedbackDiv.innerText = selectedActivity === "scrambler" 
+                ? "❌ Not quite! Check your letter placements." 
+                : "❌ Detective clue error! Re-read the objective and try again.";
+            feedbackDiv.className = "feedback incorrect";
+            mistakesCount++;
+            currentWordHasMistake = true;
+        }
+    }
+
+    function advanceProgress() {
+        currentIndex++;
+        currentWordHasMistake = false; 
+        nextWord();
+    }
+
+    // --- GLOBAL ENDING & REPORTING ---
+    function endGame() {
+        const attemptedCount = wordsMastered.length + wordsStruggled.length;
+        const correctFirstTry = wordsMastered.length;
+        
+        let percentage = 0;
+        if (attemptedCount > 0) {
+            percentage = Math.round((correctFirstTry / attemptedCount) * 100);
+        }
+
+        document.getElementById("game-screen").classList.remove("active");
+        document.getElementById("results-screen").classList.add("active");
+
+        document.getElementById("score-report").innerText = `Final Mark: ${correctFirstTry} / ${attemptedCount} (${percentage}%)`;
+        document.getElementById("completion-text").innerText = `You completed ${attemptedCount} out of ${currentWords.length} targets in this session.`;
+
+        let activityTitle = "";
+        if (selectedActivity === "scrambler") activityTitle = "SPELLING ARENA";
+        else if (selectedActivity === "detective") activityTitle = "SPELLING DETECTIVE";
+        else activityTitle = "ALPHABET ATTACK";
+
+        const timestamp = new Date().toLocaleString();
+        
+        let reportVoucher = `📝 ${activityTitle} REPORT\n`;
+        reportVoucher += `---------------------------------\n`;
+        reportVoucher += `🎯 Group: ${selectedGroup} | Target: ${selectedWeek}\n`;
+        reportVoucher += `⏰ Completed: ${timestamp}\n`;
+        reportVoucher += `📈 FINAL MARK: ${correctFirstTry} / ${attemptedCount} (${percentage}%)\n\n`;
+        
+        reportVoucher += `✅ MASTERED (First Try):\n`;
+        if (wordsMastered.length === 0) reportVoucher += ` - None\n`;
+        wordsMastered.forEach(w => reportVoucher += ` • ${w}\n`);
+        
+        reportVoucher += `\n🔄 NEEDED REVIEW (Multiple Tries):\n`;
+        if (wordsStruggled.length === 0) reportVoucher += ` - None\n`;
+        wordsStruggled.forEach(w => reportVoucher += ` • ${w}\n`);
+        
+        const unattempted = currentWords.length - attemptedCount;
+        if (unattempted > 0) {
+            reportVoucher += `\n⏭️ UNATTEMPTED: ${unattempted} word(s) skipped.\n`;
+        }
+        
+        reportVoucher += `---------------------------------`;
+
+        document.getElementById("report-text").value = reportVoucher;
+        
+        const copyBtn = document.getElementById("copy-btn");
+        copyBtn.innerText = "📋 Copy Report to Clipboard";
+        copyBtn.style.backgroundColor = "var(--accent)";
+    }
+
+    function copyReport() {
+        const reportTextarea = document.getElementById("report-text");
+        reportTextarea.select();
+        reportTextarea.setSelectionRange(0, 99999); 
+
+        navigator.clipboard.writeText(reportTextarea.value).then(() => {
+            const copyBtn = document.getElementById("copy-btn");
+            copyBtn.innerText = "✅ Copied Successfully!";
+            copyBtn.style.backgroundColor = "var(--success)";
+        }).catch(err => {
+            alert("Could not automatically copy. Please manually select and copy text block.");
+        });
+    }
+
+    function returnToSetup() {
+        document.getElementById("results-screen").classList.remove("active");
+        document.getElementById("setup-screen").classList.add("active");
+    }
+
+    // Enter Key Support for Standard UI
+    document.getElementById("user-input").addEventListener("keyup", function(event) {
+        if (event.key === "Enter" && document.getElementById("standard-ui").style.display !== "none") {
+            document.getElementById("action-btn").click();
+        }
+    });
+</script>
+
+</body>
+</html>
